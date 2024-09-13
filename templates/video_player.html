@@ -1,0 +1,12 @@
+<div class="card-body">
+    {% if current_video[1] %}
+        <video class="video-player" controls>
+            <source src="{{ url_for('file', folder_name=folder_name, file_name=current_video[1]) }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <h4>{{ current_video[0] }}</h4>
+        <p>{{ current_video[2] }}</p>
+    {% else %}
+        <p>No video available.</p>
+    {% endif %}
+</div>

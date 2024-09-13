@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ folder_name }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #212529;
+            color: #ffffff;
+        }
+        .card {
+            margin-bottom: 20px;
+            background-color: #343a40;
+            border: none;
+        }
+        .card-header {
+            background-color: #495057;
+        }
+        .card-body {
+            background-color: #6c757d;
+        }
+        .video-player {
+            max-width: 100%;
+            height: auto;
+            background-color: #000;
+        }
+        .sidebar {
+            background-color: #343a40;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .sidebar a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+        .resources {
+            background-color: #343a40;
+            padding: 10px;
+            border-radius: 5px;
+            color: #ffffff;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Video Player and Video List -->
+            <div class="col-md-8">
+                <div class="row">
+                    <!-- Video Player -->
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Video Player</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if current_video[1] %}
+                                    <video id="videoPlayer" class="video-player" controls>
+                                        <source src="{{ url_for('file', folder_name=folder_name, file_name=current_video[1]) }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <h4 id="videoTitle">{{ current_video[0] }}</h4>
+                                    <p id="videoDescription">{{ current_video[2] }}</p>
+                                {% else %}
+                                    <p>No video available.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Video List -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Video List</h5>
+                    </div>
+                    <div class="card-body sidebar">
+                        <ul class="list-unstyled">
+                            {% for video in videos %}
+                                <li>
+                                    <a href="#" data-video="{{ video[1] }}" data-title="{{ video[0] }}" data-description="{{ video[2] }}">
+                                        {{ video[0] }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <a href="{{ url_for('index') }}" class="btn btn-secondary mt-4">Back to Index</a>
+            </div>
+        </div>
+        <!-- Resources Section -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="resources">
+                    <h4>Resources</h4>
+                    <ul class="list-unstyled">
+                        {% for resource in resources %}
+                            <li>
+                                <a href="{{ url_for('file', folder_name=folder_name, file_name=resource) }}" class="text-white">
+                                    {{ resource }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoLinks = document.querySelectorAll('.sidebar a');
+
+            videoLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const videoSrc = this.getAttribute('data-video');
+                    const videoTitle = this.getAttribute('data-title');
+                    const videoDescription = this.getAttribute('data-description');
+
+                    const videoPlayer = document.getElementById('videoPlayer');
+                    const videoTitleElem = document.getElementById('videoTitle');
+                    const videoDescriptionElem = document.getElementById('videoDescription');
+
+                    if (videoSrc) {
+                        videoPlayer.src = "{{ url_for('file', folder_name=folder_name, file_name='') }}" + videoSrc;
+                        videoTitleElem.textContent = videoTitle;
+                        videoDescriptionElem.textContent = videoDescription;
+                    } else {
+                        videoPlayer.src = '';
+                        videoTitleElem.textContent = 'No video available';
+                        videoDescriptionElem.textContent = '';
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
